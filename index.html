@@ -3272,6 +3272,8 @@
                 var nextButton = overlay.querySelector("[data-next]");
                 var requestId = 0;
                 var debounceTimer = null;
+                var lastRequestedQuery = "";
+                var searchInFlight = false;
 
                 function escapeHtml(value) {
                     return String(value)
@@ -3386,8 +3388,12 @@
                 });
 
                 async function searchUsers(query) {
-                    var currentRequest = ++requestId;
                     query = query.trim();
+                    if (!query) { heading.textContent = "Search for a username"; showMessage("Start typing a username to search."); return; }
+                    if (searchInFlight && query.toLowerCase() === lastRequestedQuery.toLowerCase()) return;
+                    var currentRequest = ++requestId;
+                    lastRequestedQuery = query;
+                    searchInFlight = true;
 
                     if (!query) {
                         heading.textContent = "Search for a username";
@@ -3421,6 +3427,7 @@
                             var waitText = retry > 0 ? " Try again in about " + retry + " seconds." : " Please wait a few seconds and try again.";
                             heading.textContent = "Search temporarily limited";
                             showMessage("Roblox is rate-limiting searches." + waitText);
+                            searchInFlight = false;
                             return;
                         }
 
@@ -3446,11 +3453,13 @@
 
                         heading.textContent = "People (" + users.length + ")";
                         renderUsers(users);
+                        searchInFlight = false;
                     } catch (error) {
                         if (currentRequest !== requestId) return;
                         console.error("Roblox username search failed:", error);
                         heading.textContent = "People";
                         showMessage(error && error.message ? error.message : "Unable to search Roblox users right now.");
+                        searchInFlight = false;
                     }
                 }
 
