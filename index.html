@@ -3385,6 +3385,9 @@
                     });
                 });
 
+                var searchCache = new Map();
+                var SEARCH_CACHE_TTL = 60000;
+
                 async function searchUsers(query) {
                     var currentRequest = ++requestId;
                     query = query.trim();
@@ -3392,6 +3395,14 @@
                     if (!query) {
                         heading.textContent = "Search for a username";
                         showMessage("Start typing a username to search.");
+                        return;
+                    }
+
+                    var cacheKey = query.toLowerCase();
+                    var cached = searchCache.get(cacheKey);
+                    if (cached && (Date.now() - cached.time) < SEARCH_CACHE_TTL) {
+                        heading.textContent = "People (" + cached.users.length + ")";
+                        renderUsers(cached.users);
                         return;
                     }
 
@@ -3408,36 +3419,31 @@
                             credentials: "omit",
                             mode: "cors",
                             cache: "no-store",
-                            headers: {
-                                "Accept": "application/json"
-                            }
+                            headers: { "Accept": "application/json" }
                         });
 
-                        if (currentRequest !== requestId) {
+                        if (currentRequest !== requestId) return;
+
+                        var data = {};
+                        try { data = await response.json(); } catch (_) {}
+
+                        if (response.status === 429) {
+                            var retry = Number(data.retryAfter || 0);
+                            var waitText = retry > 0 ? " Try again in about " + retry + " seconds." : " Please wait a few seconds and try again.";
+                            heading.textContent = "Search temporarily limited";
+                            showMessage("Roblox is rate-limiting searches." + waitText);
                             return;
                         }
 
                         if (!response.ok) {
-                            var errorText = await response.text();
-                            throw new Error("Roblox API returned HTTP " + response.status + ": " + errorText.slice(0, 200));
+                            throw new Error(data.message || data.error || ("Search failed (HTTP " + response.status + ")"));
                         }
 
-                        var data = await response.json();
-
-                        // Accept the normal Roblox proxy shape as well as
-                        // common wrapper shapes so the UI does not silently
-                        // show an empty result when the API returns users
-                        // under a different top-level property.
                         var users = [];
-                        if (Array.isArray(data)) {
-                            users = data;
-                        } else if (Array.isArray(data.data)) {
-                            users = data.data;
-                        } else if (Array.isArray(data.users)) {
-                            users = data.users;
-                        } else if (Array.isArray(data.results)) {
-                            users = data.results;
-                        }
+                        if (Array.isArray(data)) users = data;
+                        else if (Array.isArray(data.data)) users = data.data;
+                        else if (Array.isArray(data.users)) users = data.users;
+                        else if (Array.isArray(data.results)) users = data.results;
 
                         users = users.filter(function (user) {
                             return user && user.id != null && (user.name || user.username || user.displayName);
@@ -3449,13 +3455,11 @@
                             };
                         });
 
+                        searchCache.set(cacheKey, { time: Date.now(), users: users });
                         heading.textContent = "People (" + users.length + ")";
                         renderUsers(users);
                     } catch (error) {
-                        if (currentRequest !== requestId) {
-                            return;
-                        }
-
+                        if (currentRequest !== requestId) return;
                         console.error("Roblox username search failed:", error);
                         heading.textContent = "People";
                         showMessage(error && error.message ? error.message : "Unable to search Roblox users right now.");
