@@ -1,111 +1,13 @@
 // api/roblox.js
 // Vercel Serverless Function
 // Partial Roblox username search + avatar proxy.
-// Uses short-lived in-memory caching and a 429-safe fallback.
-
-const SEARCH_CACHE_TTL = 60 * 1000;
-const searchCache = globalThis.__robloxSearchCache || new Map();
-const searchInflight = globalThis.__robloxSearchInflight || new Map();
-globalThis.__robloxSearchCache = searchCache;
-globalThis.__robloxSearchInflight = searchInflight;
-
-function cacheKey(keyword, limit) {
-  return keyword.trim().toLowerCase() + ":" + limit;
-}
-
-function normalizeUsers(data) {
-  const users = Array.isArray(data?.data) ? data.data : [];
-  return users
-    .filter(u => u && u.id != null && (u.name || u.displayName))
-    .map(u => ({
-      id: u.id,
-      name: u.name || "",
-      displayName: u.displayName || u.name || ""
-    }));
-}
-
-async function fetchSearch(keyword, limit) {
-  const robloxUrl = new URL("https://users.roblox.com/v1/users/search");
-  robloxUrl.searchParams.set("keyword", keyword);
-  robloxUrl.searchParams.set("limit", String(limit));
-
-  for (let attempt = 0; attempt < 2; attempt++) {
-    const response = await fetch(robloxUrl.toString(), {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-        "User-Agent": "Mozilla/5.0 (compatible; RobloxUserSearch/1.0)"
-      }
-    });
-
-    const text = await response.text();
-
-    if (response.status === 429) {
-      if (attempt === 0) {
-        const retryAfter = Number(response.headers.get("retry-after"));
-        const waitMs = Number.isFinite(retryAfter) && retryAfter > 0
-          ? Math.min(retryAfter * 1000, 2500)
-          : 900;
-        await new Promise(resolve => setTimeout(resolve, waitMs));
-        continue;
-      }
-
-      const error = new Error("ROBLOX_RATE_LIMITED");
-      error.status = 429;
-      error.retryAfter = Number(response.headers.get("retry-after")) || 5;
-      throw error;
-    }
-
-    if (!response.ok) {
-      const error = new Error("Roblox API returned an error");
-      error.status = response.status;
-      error.details = text;
-      throw error;
-    }
-
-    let data;
-    try {
-      data = JSON.parse(text);
-    } catch {
-      const error = new Error("Roblox returned invalid JSON");
-      error.status = 502;
-      throw error;
-    }
-
-    return normalizeUsers(data);
-  }
-}
-
-async function getSearchResults(keyword, limit) {
-  const key = cacheKey(keyword, limit);
-  const now = Date.now();
-  const cached = searchCache.get(key);
-
-  if (cached && now - cached.time < SEARCH_CACHE_TTL) {
-    return { users: cached.users, cached: true };
-  }
-
-  if (searchInflight.has(key)) {
-    const users = await searchInflight.get(key);
-    return { users, cached: false };
-  }
-
-  const promise = fetchSearch(keyword, limit);
-  searchInflight.set(key, promise);
-
-  try {
-    const users = await promise;
-    searchCache.set(key, { time: Date.now(), users });
-    return { users, cached: false };
-  } finally {
-    searchInflight.delete(key);
-  }
-}
+// Uses Roblox's official keyword search endpoint directly; no caching.
 
 export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Accept");
+  res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
 
   if (req.method === "OPTIONS") return res.status(204).end();
   if (req.method !== "GET") return res.status(405).json({ error: "Method not allowed" });
@@ -130,36 +32,55 @@ export default async function handler(req, res) {
     if (!Number.isFinite(limit) || limit < 1) limit = 10;
     limit = Math.min(Math.floor(limit), 10);
 
+    // EXACT Roblox partial/keyword username search API requested by the client.
+    const robloxUrl = new URL("https://users.roblox.com/v1/users/search");
+    robloxUrl.searchParams.set("keyword", keyword);
+    robloxUrl.searchParams.set("limit", String(limit));
+
     try {
-      const result = await getSearchResults(keyword, limit);
-      res.setHeader("Cache-Control", "public, s-maxage=60, stale-while-revalidate=120");
-      return res.status(200).json({ data: result.users, cached: result.cached });
-    } catch (error) {
-      if (error?.status === 429 || error?.message === "ROBLOX_RATE_LIMITED") {
-        const key = cacheKey(keyword, limit);
-        const stale = searchCache.get(key);
+      const response = await fetch(robloxUrl.toString(), {
+        method: "GET",
+        headers: {
+          Accept: "application/json"
+        },
+        cache: "no-store"
+      });
 
-        if (stale?.users) {
-          res.setHeader("Cache-Control", "public, s-maxage=10, stale-while-revalidate=30");
-          return res.status(200).json({
-            data: stale.users,
-            cached: true,
-            stale: true,
-            message: "Roblox is rate-limiting searches; showing the last cached result."
-          });
-        }
+      const text = await response.text();
 
+      if (response.status === 429) {
+        const retryAfter = Number(response.headers.get("retry-after"));
         return res.status(429).json({
-          error: "Roblox is temporarily rate-limiting username searches.",
-          message: "Please wait a few seconds and try again.",
+          error: "Roblox API returned HTTP 429",
+          message: "Roblox is temporarily rate-limiting username searches. Please wait and try again.",
           status: 429,
-          retryAfter: Number(error.retryAfter) || 5
+          retryAfter: Number.isFinite(retryAfter) && retryAfter > 0 ? retryAfter : null
         });
       }
 
-      return res.status(error?.status || 502).json({
-        error: error?.message || "Unable to search Roblox users",
-        details: error?.details || null
+      if (!response.ok) {
+        return res.status(response.status).json({
+          error: "Roblox API returned an error",
+          status: response.status,
+          details: text
+        });
+      }
+
+      let data;
+      try {
+        data = JSON.parse(text);
+      } catch {
+        return res.status(502).json({ error: "Roblox returned invalid JSON" });
+      }
+
+      // Pass through Roblox's search data in the shape expected by the HTML.
+      return res.status(200).json({
+        data: Array.isArray(data?.data) ? data.data : []
+      });
+    } catch (error) {
+      return res.status(502).json({
+        error: "Unable to connect to Roblox",
+        details: error?.message || String(error)
       });
     }
   }
@@ -183,7 +104,8 @@ export default async function handler(req, res) {
     try {
       const response = await fetch(robloxUrl.toString(), {
         method: "GET",
-        headers: { Accept: "application/json", "User-Agent": "Mozilla/5.0" }
+        headers: { Accept: "application/json" },
+        cache: "no-store"
       });
       const text = await response.text();
 
