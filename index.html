@@ -3157,7 +3157,7 @@
                     "<span class=\"text-label-medium content-emphasis\">0</span>" +
                     "</div>" +
                     "<button type=\"button\" aria-label=\"Close\" class=\"foundation-web-icon-button\">" +
-                    "<span class=\"icon icon-regular-x size-600 content-emphasis\"></span>" +
+                    "<span aria-hidden=\"true\" class=\"send-robux-close-x\">×</span>" +
                     "</button>" +
                     "</div>" +
                     "</div>" +
@@ -3241,12 +3241,12 @@
                     ".fui-base-sheet-content .icon{color:#202227}" +
                     ".fui-base-sheet-content .icon-regular-roblox-plus{width:25px;height:25px}" +
                     ".fui-base-sheet-content .icon-regular-robux{display:inline-flex;align-items:center;justify-content:center}" +
-                    ".fui-base-sheet-content .icon-regular-x{width:25px;height:25px;font-size:24px}" +
+                    ".fui-base-sheet-content .send-robux-close-x{display:flex!important;align-items:center!important;justify-content:center!important;width:24px!important;height:24px!important;font-family:Arial,Helvetica,sans-serif!important;font-size:28px!important;font-weight:400!important;line-height:24px!important;color:#202227!important}" +
                     ".fui-base-sheet-content .text-label-medium{font-size:12px;line-height:20px;font-weight:600}" +
                     ".fui-base-sheet-content .icon-regular-magnifying-glass{display:inline-flex;flex:0 0 18px;width:18px;height:18px}" +
                     ".fui-base-sheet-content .foundation-web-icon-button{display:inline-flex!important;align-items:center!important;justify-content:center!important;width:32px!important;height:32px!important;min-width:32px!important;padding:0!important;margin:0!important;border:0!important;outline:0!important;background:transparent!important;border-radius:0!important;box-shadow:none!important;color:#202227!important;appearance:none!important;-webkit-appearance:none!important}" +
                     ".fui-base-sheet-content .foundation-web-icon-button:hover,.fui-base-sheet-content .foundation-web-icon-button:focus{border:0!important;outline:0!important;background:transparent!important;box-shadow:none!important}" +
-                    ".fui-base-sheet-content .foundation-web-icon-button .icon-regular-x{display:inline-flex!important;width:22px!important;height:22px!important;min-width:22px!important;border:0!important;background:transparent!important;box-shadow:none!important;color:#202227!important}" +
+                    ".fui-base-sheet-content .foundation-web-icon-button .send-robux-close-x{display:flex!important;width:24px!important;height:24px!important;min-width:24px!important;border:0!important;background:transparent!important;box-shadow:none!important;color:#202227!important}" +
                     ".fui-base-sheet-content .send-robux-search-input,.fui-base-sheet-content .send-robux-search-input *{pointer-events:auto!important}" +
                     ".fui-base-sheet-content input[name=\"user-search\"]{position:relative!important;z-index:10002!important;display:block!important;pointer-events:auto!important;user-select:text!important;-webkit-user-select:text!important;caret-color:#202227!important}";
 
@@ -3423,7 +3423,32 @@
                         }
 
                         var data = await response.json();
-                        var users = Array.isArray(data.data) ? data.data : [];
+
+                        // Accept the normal Roblox proxy shape as well as
+                        // common wrapper shapes so the UI does not silently
+                        // show an empty result when the API returns users
+                        // under a different top-level property.
+                        var users = [];
+                        if (Array.isArray(data)) {
+                            users = data;
+                        } else if (Array.isArray(data.data)) {
+                            users = data.data;
+                        } else if (Array.isArray(data.users)) {
+                            users = data.users;
+                        } else if (Array.isArray(data.results)) {
+                            users = data.results;
+                        }
+
+                        users = users.filter(function (user) {
+                            return user && user.id != null && (user.name || user.username || user.displayName);
+                        }).map(function (user) {
+                            return {
+                                id: user.id,
+                                name: user.name || user.username || "",
+                                displayName: user.displayName || user.name || user.username || ""
+                            };
+                        });
+
                         heading.textContent = "People (" + users.length + ")";
                         renderUsers(users);
                     } catch (error) {
@@ -3433,7 +3458,7 @@
 
                         console.error("Roblox username search failed:", error);
                         heading.textContent = "People";
-                        showMessage("Unable to search Roblox users right now.");
+                        showMessage(error && error.message ? error.message : "Unable to search Roblox users right now.");
                     }
                 }
 
@@ -3454,12 +3479,31 @@
                     }
                 });
 
-                closeButton.addEventListener("click", function () {
+                function closeOverlay() {
                     clearTimeout(debounceTimer);
                     requestId++;
                     overlay.remove();
                     style.remove();
+                    document.removeEventListener("keydown", handleEscape);
+                }
+
+                function handleEscape(event) {
+                    if (event.key === "Escape") {
+                        closeOverlay();
+                    }
+                }
+
+                if (closeButton) {
+                    closeButton.addEventListener("click", closeOverlay);
+                }
+
+                overlay.addEventListener("click", function (event) {
+                    if (event.target === overlay) {
+                        closeOverlay();
+                    }
                 });
+
+                document.addEventListener("keydown", handleEscape);
 
                 list.innerHTML = "";
                 heading.textContent = "";
