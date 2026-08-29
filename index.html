@@ -3165,7 +3165,7 @@
                     "<div class=\"send-robux-search-input\">" +
                     "<div class=\"foundation-web-input\">" +
                     "<span aria-hidden=\"true\" class=\"icon icon-regular-magnifying-glass size-medium content-emphasis\"></span>" +
-                    "<input type=\"search\" placeholder=\"Search username\" name=\"user-search\" maxlength=\"30\" autocomplete=\"off\" autocapitalize=\"none\" spellcheck=\"false\" aria-label=\"Search username\">" +
+                    "<input type=\"text\" placeholder=\"Search username\" name=\"user-search\" maxlength=\"30\" autocomplete=\"off\" autocapitalize=\"none\" spellcheck=\"false\" aria-label=\"Search username\">" +
                     "</div>" +
                     "</div>" +
                     "</div>" +
@@ -3243,12 +3243,21 @@
                     ".fui-base-sheet-content .icon-regular-robux{display:inline-flex;align-items:center;justify-content:center}" +
                     ".fui-base-sheet-content .icon-regular-x{width:25px;height:25px;font-size:24px}" +
                     ".fui-base-sheet-content .text-label-medium{font-size:12px;line-height:20px;font-weight:600}" +
-                    ".fui-base-sheet-content .icon-regular-magnifying-glass{display:inline-flex;flex:0 0 18px;width:18px;height:18px}";
+                    ".fui-base-sheet-content .icon-regular-magnifying-glass{display:inline-flex;flex:0 0 18px;width:18px;height:18px}" +
+                    ".fui-base-sheet-content .foundation-web-icon-button{display:inline-flex!important;align-items:center!important;justify-content:center!important;width:32px!important;height:32px!important;min-width:32px!important;padding:0!important;margin:0!important;border:0!important;outline:0!important;background:transparent!important;border-radius:0!important;box-shadow:none!important;color:#202227!important;appearance:none!important;-webkit-appearance:none!important}" +
+                    ".fui-base-sheet-content .foundation-web-icon-button:hover,.fui-base-sheet-content .foundation-web-icon-button:focus{border:0!important;outline:0!important;background:transparent!important;box-shadow:none!important}" +
+                    ".fui-base-sheet-content .foundation-web-icon-button .icon-regular-x{display:inline-flex!important;width:22px!important;height:22px!important;min-width:22px!important;border:0!important;background:transparent!important;box-shadow:none!important;color:#202227!important}" +
+                    ".fui-base-sheet-content .send-robux-search-input,.fui-base-sheet-content .send-robux-search-input *{pointer-events:auto!important}" +
+                    ".fui-base-sheet-content input[name=\"user-search\"]{position:relative!important;z-index:10002!important;display:block!important;pointer-events:auto!important;user-select:text!important;-webkit-user-select:text!important;caret-color:#202227!important}";
 
                 document.head.appendChild(style);
                 document.body.appendChild(overlay);
 
                 var input = overlay.querySelector("input[name='user-search']");
+                if (!input) {
+                    console.error("Send Robux: username search input was not found.");
+                    return;
+                }
                 var list = overlay.querySelector("[data-users]");
                 var heading = overlay.querySelector("[data-search-heading]");
                 var closeButton = overlay.querySelector("[aria-label='Close']");
