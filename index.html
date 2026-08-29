@@ -3385,9 +3385,6 @@
                     });
                 });
 
-                var searchCache = new Map();
-                var SEARCH_CACHE_TTL = 60000;
-
                 async function searchUsers(query) {
                     var currentRequest = ++requestId;
                     query = query.trim();
@@ -3395,14 +3392,6 @@
                     if (!query) {
                         heading.textContent = "Search for a username";
                         showMessage("Start typing a username to search.");
-                        return;
-                    }
-
-                    var cacheKey = query.toLowerCase();
-                    var cached = searchCache.get(cacheKey);
-                    if (cached && (Date.now() - cached.time) < SEARCH_CACHE_TTL) {
-                        heading.textContent = "People (" + cached.users.length + ")";
-                        renderUsers(cached.users);
                         return;
                     }
 
@@ -3455,7 +3444,6 @@
                             };
                         });
 
-                        searchCache.set(cacheKey, { time: Date.now(), users: users });
                         heading.textContent = "People (" + users.length + ")";
                         renderUsers(users);
                     } catch (error) {
