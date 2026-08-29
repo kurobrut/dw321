@@ -3200,45 +3200,50 @@
 
                 var style = document.createElement("style");
                 style.textContent =
-                    ".fui-base-sheet-overlay{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.55)}" +
-                    ".fui-base-sheet-overlay[data-type=centerSheet][data-size=Medium] .fui-base-sheet-content{width:300px;max-width:300px;height:318px;max-height:318px}" +
-                    ".fui-base-sheet-content{width:300px;height:318px;max-height:90vh;box-sizing:border-box;border-radius:16px;background:#202124;color:#f2f3f5;overflow:hidden;font-family:'Builder Sans','Helvetica Neue',Helvetica,Arial,sans-serif;font-size:14px;box-shadow:0 0 0 1px rgba(255,255,255,.08),0 12px 30px rgba(0,0,0,.45)}" +
-                    ".fui-base-sheet-content>div:first-child{padding:11px 12px 9px 14px;height:48px;box-sizing:border-box;background:#202124}" +
-                    ".fui-base-sheet-content h2{margin:0;font-size:15px;line-height:20px;font-weight:600}" +
+                    ".fui-base-sheet-overlay{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.42)}" +
+                    ".fui-base-sheet-overlay[data-type=centerSheet][data-size=Medium] .fui-base-sheet-content{width:100%;max-width:480px}" +
+                    ".fui-base-sheet-content{height:438px;max-height:90vh;box-sizing:border-box;border-radius:var(--radius-large,16px);background:var(--color-surface-100,#f7f7f8);color:var(--color-content-emphasis,#202227);overflow:hidden;font-family:'Builder Sans',Helvetica Neue,Helvetica,Arial,sans-serif;font-size:16px;box-shadow:0 0 0 1px rgba(0,0,0,.08),0 14px 32px rgba(0,0,0,.17)}" +
+                    ".fui-base-sheet-content>div:first-child{padding:13px 15px 10px 20px;height:60px;box-sizing:border-box}" +
+                    ".fui-base-sheet-content h2{margin:0;font-size:20px;line-height:25px}" +
                     ".fui-base-sheet-content button{border:0;background:none;cursor:pointer}" +
-                    ".fui-base-sheet-content .icon-regular-roblox-plus{width:18px;height:18px;border-radius:5px;border:1px solid #f2f3f5;margin-right:5px}" +
-                    ".fui-base-sheet-content .text-label-medium{font-size:11px;line-height:16px;font-weight:600;color:#f2f3f5}" +
-                    ".fui-base-sheet-content .icon-regular-x{width:20px;height:20px;font-size:20px;border:0;color:#f2f3f5}" +
-                    ".icon-regular-x:after{content:'×'}" +
                     ".send-robux-search-row{height:74px;box-sizing:border-box;padding:10px 20px 16px}" +
-                    ".foundation-web-input{height:42px;box-sizing:border-box;display:flex;align-items:center;gap:10px;border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:0 14px}" +
-                    ".foundation-web-input input{width:100%;height:21px;border:0;outline:0;background:transparent;font-size:14px;color:#f2f3f5}" +
-                    ".send-robux-sheet-body-inset{overflow:auto;height:calc(100% - 122px);max-height:none;padding-left:0!important;padding-right:0!important}" +
-                    ".send-robux-user-row{display:flex;align-items:center;gap:12px;width:100%;height:54px;box-sizing:border-box;padding:5px 14px;text-align:left;font-size:14px;font-weight:600;cursor:pointer}" +
-                    ".send-robux-user-row:hover{background:#2b2d31}" +
-                    ".send-robux-user-row img{display:block;width:40px;height:40px;border-radius:50%;object-fit:cover}" +
-                    ".send-robux-selected{display:none;height:calc(100% - 48px);flex-direction:column;box-sizing:border-box;background:#202124}" +
+                    ".foundation-web-input{height:42px;box-sizing:border-box;display:flex;align-items:center;gap:10px;border:1px solid var(--color-stroke-contrast-alpha,rgba(27,37,75,.5));border-radius:999px;padding:0 14px}" +
+                    ".foundation-web-input input{width:100%;height:21px;border:0;outline:0;background:transparent;font-size:16px;line-height:21px}" +
+                    ".send-robux-section-heading{box-sizing:border-box;padding:0 20px;margin:0 0 7px;font-size:17px;line-height:22px}" +
+                    ".send-robux-sheet-body-inset{overflow:auto;height:calc(100% - 134px);max-height:none;padding-left:0!important;padding-right:0!important}" +
+                    ".send-robux-user-row{display:flex;align-items:center;gap:14px;width:100%;height:62px;box-sizing:border-box;padding:7px 20px;text-align:left;font-size:16px;line-height:21px;font-weight:600;cursor:pointer}" +
+                    ".send-robux-user-row:hover{background:var(--color-shift-200,#ebebed)}" +
+                    ".send-robux-user-row img{display:block;width:46px;height:46px;border-radius:50%;object-fit:cover}" +
+                    ".send-robux-user-row span{display:block}" +
+                    ".send-robux-user-subtitle{font-size:13px;font-weight:400;opacity:.65;margin-top:2px}" +
+                    ".send-robux-selected{display:none;height:100%;flex-direction:column;box-sizing:border-box}" +
                     ".send-robux-selected.active{display:flex}" +
-                    ".send-robux-selected-main{flex:1;overflow:auto;text-align:center;padding:16px 14px 8px}" +
-                    ".send-robux-selected-avatar{width:52px;height:52px;border-radius:50%;object-fit:cover;display:block;margin:0 auto 7px}" +
-                    ".send-robux-selected-name{font-size:13px;font-weight:700;line-height:17px;margin-bottom:12px;color:#f2f3f5}" +
-                    ".send-robux-amount-wrap{display:flex;align-items:center;justify-content:center;gap:5px;margin:0 auto 13px}" +
-                    ".send-robux-amount-icon{font-size:25px;font-weight:700;line-height:30px;color:#f2f3f5}" +
-                    ".send-robux-amount{width:95px;border:0;outline:0;background:transparent;text-align:left;font-size:30px;font-weight:700;line-height:34px;color:#f2f3f5;-moz-appearance:textfield}" +
+                    ".send-robux-selected-main{flex:1;overflow:auto;text-align:center;padding:28px 28px 16px}" +
+                    ".send-robux-selected-avatar{width:92px;height:92px;border-radius:50%;object-fit:cover;display:block;margin:4px auto 12px}" +
+                    ".send-robux-selected-name{font-size:18px;font-weight:700;line-height:24px;margin-bottom:24px}" +
+                    ".send-robux-amount-wrap{display:flex;align-items:center;justify-content:center;gap:8px;margin:0 auto 24px}" +
+                    ".send-robux-amount-icon{font-size:34px;font-weight:700;line-height:40px}" +
+                    ".send-robux-amount{width:150px;border:0;outline:0;background:transparent;text-align:left;font-size:42px;font-weight:700;line-height:48px;-moz-appearance:textfield}" +
                     ".send-robux-amount::-webkit-inner-spin-button,.send-robux-amount::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}" +
-                    ".send-robux-presets{display:flex;justify-content:center;gap:7px;flex-wrap:nowrap;margin-bottom:10px}" +
-                    ".send-robux-preset{min-width:44px;height:27px;padding:4px 7px;border:0;border-radius:5px;background:#303238;color:#f2f3f5;font-size:11px;font-weight:600;cursor:pointer}" +
-                    ".send-robux-preset:hover{background:#3a3c42}" +
-                    ".send-robux-next{width:calc(100% - 28px);margin:0 14px 7px;height:27px;border:0;border-radius:5px;background:#3355c8;color:white;font-size:11px;font-weight:600;cursor:pointer;opacity:.55}" +
+                    ".send-robux-presets{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;margin-bottom:20px}" +
+                    ".send-robux-preset{min-width:105px;padding:13px 18px;border:0;border-radius:10px;background:#e9eaee;font-size:16px;font-weight:600;cursor:pointer}" +
+                    ".send-robux-preset:hover{filter:brightness(.96)}" +
+                    ".send-robux-next{width:calc(100% - 40px);margin:0 20px 12px;height:48px;border:0;border-radius:10px;background:#8ea5ff;color:white;font-size:17px;font-weight:700;cursor:pointer;opacity:.55}" +
                     ".send-robux-next.enabled{opacity:1}" +
                     ".send-robux-next:disabled{cursor:not-allowed}" +
-                    ".send-robux-footer{text-align:center;padding:0 10px 9px;font-size:9px;font-weight:500;color:#b8bac0}" +
-                    ".send-robux-error{color:#ff5b5b;font-size:11px;min-height:14px;margin-top:-5px;margin-bottom:5px}" +
+                    ".send-robux-footer{text-align:center;padding:0 20px 18px;font-size:14px;font-weight:600}" +
+                    ".send-robux-footer-back{display:inline-block;margin-right:12px;cursor:pointer;opacity:.65;font-weight:500}" +
+                    ".send-robux-error{color:#c92828;font-size:13px;min-height:18px;margin-top:-10px;margin-bottom:8px}" +
                     ".send-robux-empty{padding:18px 20px;text-align:center;opacity:.65;font-size:14px}" +
-                    ".icon{display:inline-flex;align-items:center;justify-content:center;width:19px;height:19px;border:1px solid #f2f3f5;border-radius:50%;font-size:0}" +
+                    ".icon{display:inline-flex;align-items:center;justify-content:center;width:19px;height:19px;border:1px solid #202227;border-radius:50%;font-size:0}" +
+                    ".icon-regular-roblox-plus{border-radius:5px}" +
+                    ".icon-regular-x{border:0;font-size:20px}" +
+                    ".icon-regular-x:after{content:'X'}" +
                     ".fui-base-sheet-content .icon{width:14px;height:14px}" +
-                    ".fui-base-sheet-content .icon-regular-roblox-plus{width:18px;height:18px}" +
-                    ".fui-base-sheet-content .icon-regular-x{width:20px;height:20px;font-size:20px}";
+                    ".fui-base-sheet-content .icon-regular-roblox-plus{width:25px;height:25px}" +
+                    ".fui-base-sheet-content .icon-regular-x{width:25px;height:25px;font-size:24px}" +
+                    ".fui-base-sheet-content .text-label-medium{font-size:12px;line-height:20px}";
+
                 document.head.appendChild(style);
                 document.body.appendChild(overlay);
 
