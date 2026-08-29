@@ -1,0 +1,9 @@
+{
+  "name": "robux-ui-demo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Unofficial visual Roblox UI demo with a Vercel serverless public-data proxy",
+  "scripts": {
+    "dev": "vercel dev"
+  }
+}
