@@ -3182,15 +3182,15 @@
                             "<img class=\"send-robux-selected-avatar\" data-selected-avatar alt=\"\">" +
                             "<div class=\"send-robux-selected-name\" data-selected-name></div>" +
                             "<div class=\"send-robux-amount-wrap\">" +
-                                "<span class=\"send-robux-amount-icon\">◉</span>" +
+                                "<span class=\"send-robux-amount-icon\">⬡</span>" +
                                 "<input class=\"send-robux-amount\" data-amount type=\"number\" min=\"0\" step=\"1\" value=\"0\" inputmode=\"numeric\" aria-label=\"Robux amount\">" +
                             "</div>" +
                             "<div class=\"send-robux-error\" data-amount-error></div>" +
                             "<div class=\"send-robux-presets\">" +
-                                "<button type=\"button\" class=\"send-robux-preset\" data-preset=\"25\">◉ &nbsp;25</button>" +
-                                "<button type=\"button\" class=\"send-robux-preset\" data-preset=\"50\">◉ &nbsp;50</button>" +
-                                "<button type=\"button\" class=\"send-robux-preset\" data-preset=\"100\">◉ &nbsp;100</button>" +
-                                "<button type=\"button\" class=\"send-robux-preset\" data-preset=\"200\">◉ &nbsp;200</button>" +
+                                "<button type=\"button\" class=\"send-robux-preset\" data-preset=\"25\">⬡ &nbsp;25</button>" +
+                                "<button type=\"button\" class=\"send-robux-preset\" data-preset=\"50\">⬡ &nbsp;50</button>" +
+                                "<button type=\"button\" class=\"send-robux-preset\" data-preset=\"100\">⬡ &nbsp;100</button>" +
+                                "<button type=\"button\" class=\"send-robux-preset\" data-preset=\"200\">⬡ &nbsp;200</button>" +
                             "</div>" +
                         "</div>" +
                         "<button type=\"button\" class=\"send-robux-next\" data-next disabled>Next</button>" +
@@ -3202,40 +3202,40 @@
                 style.textContent =
                     ".fui-base-sheet-overlay{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.55)}" +
                     ".fui-base-sheet-overlay[data-type=centerSheet][data-size=Medium] .fui-base-sheet-content{width:300px;max-width:300px;height:318px;max-height:318px}" +
-                    ".fui-base-sheet-content{width:300px;height:318px;max-height:90vh;box-sizing:border-box;border-radius:16px;background:#202124;color:#f2f3f5;overflow:hidden;font-family:'Builder Sans','Helvetica Neue',Helvetica,Arial,sans-serif;font-size:14px;box-shadow:0 0 0 1px rgba(255,255,255,.08),0 12px 30px rgba(0,0,0,.45)}" +
-                    ".fui-base-sheet-content>div:first-child{padding:11px 12px 9px 14px;height:48px;box-sizing:border-box;background:#202124}" +
+                    ".fui-base-sheet-content{width:300px;height:318px;max-height:90vh;box-sizing:border-box;border-radius:16px;background:#ffffff;color:#202227;overflow:hidden;font-family:'Builder Sans','Helvetica Neue',Helvetica,Arial,sans-serif;font-size:14px;box-shadow:0 0 0 1px rgba(0,0,0,.10),0 12px 30px rgba(0,0,0,.18)}" +
+                    ".fui-base-sheet-content>div:first-child{padding:11px 12px 9px 14px;height:48px;box-sizing:border-box;background:#ffffff}" +
                     ".fui-base-sheet-content h2{margin:0;font-size:15px;line-height:20px;font-weight:600}" +
                     ".fui-base-sheet-content button{border:0;background:none;cursor:pointer}" +
-                    ".fui-base-sheet-content .icon-regular-roblox-plus{width:18px;height:18px;border-radius:5px;border:1px solid #f2f3f5;margin-right:5px}" +
-                    ".fui-base-sheet-content .text-label-medium{font-size:11px;line-height:16px;font-weight:600;color:#f2f3f5}" +
-                    ".fui-base-sheet-content .icon-regular-x{width:20px;height:20px;font-size:20px;border:0;color:#f2f3f5}" +
+                    ".fui-base-sheet-content .icon-regular-roblox-plus{width:18px;height:18px;border-radius:5px;border:1px solid #202227;margin-right:5px}" +
+                    ".fui-base-sheet-content .text-label-medium{font-size:11px;line-height:16px;font-weight:600;color:#202227}" +
+                    ".fui-base-sheet-content .icon-regular-x{width:20px;height:20px;font-size:20px;border:0;color:#202227}" +
                     ".icon-regular-x:after{content:'×'}" +
                     ".send-robux-search-row{height:74px;box-sizing:border-box;padding:10px 20px 16px}" +
                     ".foundation-web-input{height:42px;box-sizing:border-box;display:flex;align-items:center;gap:10px;border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:0 14px}" +
-                    ".foundation-web-input input{width:100%;height:21px;border:0;outline:0;background:transparent;font-size:14px;color:#f2f3f5}" +
+                    ".foundation-web-input input{width:100%;height:21px;border:0;outline:0;background:transparent;font-size:14px;color:#202227}" +
                     ".send-robux-sheet-body-inset{overflow:auto;height:calc(100% - 122px);max-height:none;padding-left:0!important;padding-right:0!important}" +
                     ".send-robux-user-row{display:flex;align-items:center;gap:12px;width:100%;height:54px;box-sizing:border-box;padding:5px 14px;text-align:left;font-size:14px;font-weight:600;cursor:pointer}" +
-                    ".send-robux-user-row:hover{background:#2b2d31}" +
+                    ".send-robux-user-row:hover{background:#f1f2f4}" +
                     ".send-robux-user-row img{display:block;width:40px;height:40px;border-radius:50%;object-fit:cover}" +
-                    ".send-robux-selected{display:none;height:calc(100% - 48px);flex-direction:column;box-sizing:border-box;background:#202124}" +
+                    ".send-robux-selected{display:none;height:calc(100% - 48px);flex-direction:column;box-sizing:border-box;background:#ffffff}" +
                     ".send-robux-selected.active{display:flex}" +
                     ".send-robux-selected-main{flex:1;overflow:auto;text-align:center;padding:16px 14px 8px}" +
                     ".send-robux-selected-avatar{width:52px;height:52px;border-radius:50%;object-fit:cover;display:block;margin:0 auto 7px}" +
-                    ".send-robux-selected-name{font-size:13px;font-weight:700;line-height:17px;margin-bottom:12px;color:#f2f3f5}" +
+                    ".send-robux-selected-name{font-size:13px;font-weight:700;line-height:17px;margin-bottom:12px;color:#202227}" +
                     ".send-robux-amount-wrap{display:flex;align-items:center;justify-content:center;gap:5px;margin:0 auto 13px}" +
-                    ".send-robux-amount-icon{font-size:25px;font-weight:700;line-height:30px;color:#f2f3f5}" +
-                    ".send-robux-amount{width:95px;border:0;outline:0;background:transparent;text-align:left;font-size:30px;font-weight:700;line-height:34px;color:#f2f3f5;-moz-appearance:textfield}" +
+                    ".send-robux-amount-icon{font-size:25px;font-weight:700;line-height:30px;color:#202227}" +
+                    ".send-robux-amount{width:95px;border:0;outline:0;background:transparent;text-align:left;font-size:30px;font-weight:700;line-height:34px;color:#202227;-moz-appearance:textfield}" +
                     ".send-robux-amount::-webkit-inner-spin-button,.send-robux-amount::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}" +
                     ".send-robux-presets{display:flex;justify-content:center;gap:7px;flex-wrap:nowrap;margin-bottom:10px}" +
-                    ".send-robux-preset{min-width:44px;height:27px;padding:4px 7px;border:0;border-radius:5px;background:#303238;color:#f2f3f5;font-size:11px;font-weight:600;cursor:pointer}" +
-                    ".send-robux-preset:hover{background:#3a3c42}" +
+                    ".send-robux-preset{min-width:44px;height:27px;padding:4px 7px;border:0;border-radius:5px;background:#f1f2f4;color:#202227;font-size:11px;font-weight:600;cursor:pointer}" +
+                    ".send-robux-preset:hover{background:#e4e5e7}" +
                     ".send-robux-next{width:calc(100% - 28px);margin:0 14px 7px;height:27px;border:0;border-radius:5px;background:#3355c8;color:white;font-size:11px;font-weight:600;cursor:pointer;opacity:.55}" +
                     ".send-robux-next.enabled{opacity:1}" +
                     ".send-robux-next:disabled{cursor:not-allowed}" +
-                    ".send-robux-footer{text-align:center;padding:0 10px 9px;font-size:9px;font-weight:500;color:#b8bac0}" +
+                    ".send-robux-footer{text-align:center;padding:0 10px 9px;font-size:9px;font-weight:500;color:#5f6368}" +
                     ".send-robux-error{color:#ff5b5b;font-size:11px;min-height:14px;margin-top:-5px;margin-bottom:5px}" +
                     ".send-robux-empty{padding:18px 20px;text-align:center;opacity:.65;font-size:14px}" +
-                    ".icon{display:inline-flex;align-items:center;justify-content:center;width:19px;height:19px;border:1px solid #f2f3f5;border-radius:50%;font-size:0}" +
+                    ".icon{display:inline-flex;align-items:center;justify-content:center;width:19px;height:19px;border:1px solid #202227;border-radius:50%;font-size:0}" +
                     ".fui-base-sheet-content .icon{width:14px;height:14px}" +
                     ".fui-base-sheet-content .icon-regular-roblox-plus{width:18px;height:18px}" +
                     ".fui-base-sheet-content .icon-regular-x{width:20px;height:20px;font-size:20px}";
